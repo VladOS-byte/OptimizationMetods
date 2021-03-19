@@ -6,7 +6,7 @@ import java.util.function.Function;
 /**
  * Method for minimization one-dimensional <code>Function</code> by Simpson's (Parabolic) method
  * @author Vladislav Pavlov
- * @author Daniel Manahov
+ * @author Daniil Monahov
  */
 public class ParabolicSection extends Method {
 

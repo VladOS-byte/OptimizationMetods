@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.border.StrokeBorder;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -29,7 +28,7 @@ import org.jfree.ui.RectangleAnchor;
  * Main class for minimization one-dimensional <code>Function</code> by different methods
  * @author Vladislav Pavlov
  * @author Danila Kuriabov
- * @author Daniel Manahov
+ * @author Daniil Monahov
  *
  */
 public class Main {
@@ -227,17 +226,22 @@ public class Main {
 				new XYSeriesCollection(series),  PlotOrientation.VERTICAL, true, true, false);
 		chart.getXYPlot().addDomainMarker(marker);
 		
+		int maxKey = 0;
+		
 		for (int j = 0; j < list.size(); j++) {
 			marker = new ValueMarker(list.get(j).x);
 			int c = (256 / (list.get(list.size() - 1).key + 1) * list.get(j).key) % 256;
 			Color color = new Color((128 + c) % 256, c, 255 - c);
 			marker.setPaint(color);
 			marker.setLabel(Integer.toString(list.get(j).key));
+			maxKey = Math.max(list.get(j).key, maxKey);
 			marker.setLabelPaint(color);
 			marker.setLabelFont(new Font("Dialog", Font.PLAIN, 12));
 			marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
 			chart.getXYPlot().addDomainMarker(marker);
 		}
+		
+		System.out.print("(" + Math.round(Math.abs(Math.log(sets.epsilon))) + ";" + maxKey + ") ");
 		
 		graphPanel.add(new ChartPanel(chart));
 		graphPanel.updateUI();
