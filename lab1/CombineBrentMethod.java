@@ -6,7 +6,7 @@ import java.util.function.Function;
 /**
  * Method for minimization one-dimensional <code>Function</code> 
  * by <a href="https://en.wikipedia.org/wiki/Brent%27s_method">Brent's combine method</a>
- * @author Vladislav Pavlov, Daniel Manahov
+ * @author Vladislav Pavlov, Daniil Monahov
  */
 public class CombineBrentMethod extends Method {
 	

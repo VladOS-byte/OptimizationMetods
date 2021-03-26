@@ -47,8 +47,19 @@ public class FibonacciMethod extends Method {
 	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
 		
-		calcFibonacci(iterationDegree);
+		for (int i = 2;;i++) {
+			calcFibonacci(i);
+			if (fibonacci[i] > (rightBorder - leftBorder) / sets.epsilon) {
+				iterationDegree = i;
+				break;
+			}
+		}
 		
+		return minimize(series, leftBorder, rightBorder);
+	}
+
+	@Override
+	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder) {
 		int iterationCounter = iterationDegree;
 		
 
