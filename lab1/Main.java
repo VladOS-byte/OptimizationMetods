@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -25,6 +30,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleAnchor;
 
+
 /**
  * Main class for minimization one-dimensional <code>Function</code> by different methods
  * @author Vladislav Pavlov
@@ -38,7 +44,7 @@ public class Main {
 
 		@Override
 		public Double apply(Double x) {
-			return 0.2 * x * Math.log10(x) + Math.pow(x - 2.3, 2);
+			return 0.2 * x * Math.log(x) + Math.pow(x - 2.3, 2);
 		}
 		
 		@Override
@@ -53,7 +59,7 @@ public class Main {
 	
 	private static JPanel graphPanel;
 	
-	private static double leftBorder = 0.5, rightBorder = 2.5;
+	private static double leftBorder = -1, rightBorder = 2;
 	
 	public static void main(String[] args) {
 		
@@ -201,9 +207,26 @@ public class Main {
 	private static void onClick(int i, Settings sets) {
 		XYSeries series = new XYSeries(function.toString());
 		
+		List<StepFrame<Double>> frameList = new ArrayList<>();
 		List<Point<Double>> list = new ArrayList<>();
-		
-		ValueMarker marker = new ValueMarker(methods[i].minimize(list, leftBorder, rightBorder, sets));
+
+		ValueMarker marker = new ValueMarker(methods[i].minimize(frameList, leftBorder, rightBorder, sets));
+
+		DecimalFormat df = new DecimalFormat("0.000000");
+		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of(methods[i].toString() + ".txt"))) {
+			for (StepFrame<Double> frame : frameList) {
+				list.add(frame.x);
+				bufferedWriter.write(
+						frame.x.key + " "
+								+ df.format(frame.x.x) + " "
+								+ df.format(frame.x.y) + " "
+								+ df.format(frame.leftBorder) + " "
+								+ df.format(frame.rightBorder));
+				bufferedWriter.newLine();
+			}
+		} catch (IOException ignored) {
+			// No operations.
+		}
 		marker.setPaint(Color.BLUE);
 		
 		double minX = marker.getValue();
@@ -215,7 +238,7 @@ public class Main {
 		marker.setLabelPaint(Color.BLUE);
 		marker.setLabelFont(new Font("Dialog", Font.PLAIN, 15));
 		marker.setLabelAnchor(RectangleAnchor.CENTER);
-		
+
 		list.forEach((point) -> {
 			series.add(point.x, point.y);
 		});

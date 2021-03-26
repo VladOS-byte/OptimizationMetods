@@ -21,9 +21,14 @@ public class DichotomyMethod extends Method {
 	public String getName() {
 		return "Метод дихотмии";
 	}
+
+	@Override
+	public String toString() {
+		return "DichotomyMethod";
+	}
 	
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder, Settings sets) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder, Settings sets) {
 		epsilon = Math.max(sets.epsilon, 4 * sets.delta);
 		delta = sets.delta;
 		sigma = sets.sigma;
@@ -31,16 +36,14 @@ public class DichotomyMethod extends Method {
 	}
 
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
 		
-		addPointToSeries(series, leftBorder, function.apply(leftBorder), key);
-		addPointToSeries(series, rightBorder, function.apply(rightBorder), key++);
 		while ((rightBorder - leftBorder) / 2 > epsilon) {
 			double x1 = (leftBorder + rightBorder) / 2 - delta, x2 = (leftBorder + rightBorder) / 2 + delta;
 			double f_x1 = function.apply(x1), f_x2 = function.apply(x2);
-			addPointToSeries(series, x1, f_x1, key);
-			addPointToSeries(series, x2, f_x2, key++);
+			addPointToSeries(series, x1, f_x1, key, leftBorder, rightBorder);
+			addPointToSeries(series, x2, f_x2, key++, leftBorder, rightBorder);
 			if (f_x1 - f_x2 <= sigma) {
 				rightBorder = x2;
 			} else {

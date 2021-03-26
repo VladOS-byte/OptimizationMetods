@@ -21,19 +21,24 @@ public class ParabolicSection extends Method {
 	public String getName() {
 		return "Метод парабол";
 	}
-	
+
+    @Override
+    public String toString() {
+        return "ParabolicMethod";
+    }
+
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder, Settings sets) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder, Settings sets) {
 		epsilon = sets.epsilon;
 		return minimize(series, leftBorder, rightBorder);
 	}
 	
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
 		
-		double m = chooseMiddle(series, leftBorder, rightBorder);
-		addPointToSeries(series, rightBorder, function.apply(rightBorder), key);
+		double m = chooseMiddle(leftBorder, rightBorder);
+		addPointToSeries(series, m, function.apply(m), key, leftBorder, rightBorder);
 		
         double m1 = nextStep(series, leftBorder, m, rightBorder);
         while (m1 < m - epsilon || m1 > m + epsilon) {
@@ -57,11 +62,11 @@ public class ParabolicSection extends Method {
      * @param right - maximal <code>x</code> of range
      * @return next medium <code>x</code>
      */
-    protected double nextStep(List<Point<Double>> series, double left, double m, double right) {
+    public double nextStep(List<StepFrame<Double>> series, double left, double m, double right) {
         double f1 = function.apply(left), f2 = function.apply(m), f3 = function.apply(right);
         
         if (changeMiddle) {
-        	addPointToSeries(series, m, f2, key++);
+        	addPointToSeries(series, m, f2, key++, left, right);
         }
         
         return m -
@@ -70,7 +75,7 @@ public class ParabolicSection extends Method {
     }
 
     
-    private double chooseMiddle(List<Point<Double>> series, double left, double right) {
+    private double chooseMiddle(double left, double right) {
         double f1 = function.apply(left), f3 = function.apply(right);
         double step = (right - left) / 100;
         double m;
@@ -80,7 +85,6 @@ public class ParabolicSection extends Method {
             	key++;
                 return m;
             }
-            addPointToSeries(series, m, f2, key);
         }
         key++;
         return f1 < f3 ? left : right;

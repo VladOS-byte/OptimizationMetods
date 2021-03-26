@@ -22,20 +22,22 @@ public class GoldenCrossSection extends Method {
 	public String getName() {
 		return "Метод золотого сечения";
 	}
+
+	@Override
+	public String toString() {
+		return "GoldenCrossMethod";
+	}
 	
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder, Settings sets) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder, Settings sets) {
 		epsilon = sets.epsilon;
 		return minimize(series, leftBorder, rightBorder);
 	}
 	
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
-		
-		addPointToSeries(series, leftBorder, function.apply(leftBorder), key++);
-		addPointToSeries(series, rightBorder, function.apply(rightBorder), key++);
-		
+
 		return solve(series, leftBorder, rightBorder);
 	}
 	
@@ -47,7 +49,7 @@ public class GoldenCrossSection extends Method {
 	 * @param rightBorder - maximal <code>x</code> of range
 	 * @return <code>x</code>, where function has minimal value
 	 */
-	private double solve(List<Point<Double>> series, double leftBorder, double rightBorder) {
+	private double solve(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		if (Math.abs(rightBorder - leftBorder) < epsilon) {
             return (leftBorder + rightBorder) / 2;
         } else {
@@ -56,8 +58,8 @@ public class GoldenCrossSection extends Method {
             double y1 = function.apply(x1);
             double y2 = function.apply(x2);
             
-            addPointToSeries(series, x1, y1, key++);
-            addPointToSeries(series, x2, y2, key++);
+            addPointToSeries(series, x1, y1, key++, leftBorder, rightBorder);
+            addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
             
             if (y1 >= y2) {
                 return solve(series, x1, rightBorder);

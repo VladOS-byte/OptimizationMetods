@@ -23,7 +23,11 @@ public class FibonacciMethod extends Method {
 	public String getName() {
 		return "Метод Фиббоначи";
 	}
-	
+
+    @Override
+    public String toString() {
+        return "FibonacciMethod";
+    }
 	
 	/**
 	 * Fill array by fibonacci numbers
@@ -40,22 +44,20 @@ public class FibonacciMethod extends Method {
     }
 
 	@Override
-	public double minimize(List<Point<Double>> series, double leftBorder, double rightBorder) {
+	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
 		
 		calcFibonacci(iterationDegree);
 		
 		int iterationCounter = iterationDegree;
 		
-		addPointToSeries(series, leftBorder, function.apply(leftBorder), key);
-        addPointToSeries(series, rightBorder, function.apply(rightBorder), key++);
-        
+
         double x1 = leftBorder + (rightBorder - leftBorder) * fibonacci[iterationCounter - 2] / fibonacci[iterationCounter];
         double x2 = leftBorder + (rightBorder - leftBorder) * fibonacci[iterationCounter - 1] / fibonacci[iterationCounter];
         double y1 = function.apply(x1);
         double y2 = function.apply(x2);
-        addPointToSeries(series, x1, y1, key);
-        addPointToSeries(series, x2, y2, key++);
+        addPointToSeries(series, x1, y1, key, leftBorder, rightBorder);
+        addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
 
         while (iterationCounter != 1) {
             iterationCounter--;
@@ -65,14 +67,14 @@ public class FibonacciMethod extends Method {
                 x2 = rightBorder - (x1 - leftBorder);
                 y1 = y2;
                 y2 = function.apply(x2);
-                addPointToSeries(series, x2, y2, key++);
+                addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
             } else {
                 rightBorder = x2;
                 x2 = x1;
                 x1 = leftBorder + (rightBorder - x2);
                 y2 = y1;
                 y1 = function.apply(x1);
-                addPointToSeries(series, x1, y1, key++);
+                addPointToSeries(series, x1, y1, key++, leftBorder, rightBorder);
             }
         }
 		
