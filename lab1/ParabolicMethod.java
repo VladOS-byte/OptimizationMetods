@@ -82,14 +82,13 @@ public class ParabolicMethod extends Method {
 
     
     private double chooseMiddle(double left, double right, double fl, double fr) {
-//        if (function.apply(left + epsilon) <= fl) {
-//            return left + epsilon;
-//        }
-//        if (function.apply(right - epsilon) <= fr) {
-//            return right - epsilon;
-//        }
-//        return fl < fr ? left : right;
-        return 1.263932;
+        if (function.apply(left + epsilon) <= fl) {
+            return left + epsilon;
+        }
+        if (function.apply(right - epsilon) <= fr) {
+            return right - epsilon;
+        }
+        return fl < fr ? left : right;
     }
 	
 }
