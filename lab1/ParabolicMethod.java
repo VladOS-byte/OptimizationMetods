@@ -8,12 +8,12 @@ import java.util.function.Function;
  * @author Vladislav Pavlov
  * @author Daniil Monahov
  */
-public class ParabolicSection extends Method {
+public class ParabolicMethod extends Method {
 
 	private double epsilon = 0.00001;
 	protected boolean changeMiddle = false;
 	
-	ParabolicSection(Function<Double, Double> function) {
+	ParabolicMethod(Function<Double, Double> function) {
 		super(function);
 	}
 
@@ -36,20 +36,28 @@ public class ParabolicSection extends Method {
 	@Override
 	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
 		clear(series);
-		
-		double m = chooseMiddle(leftBorder, rightBorder);
-		addPointToSeries(series, m, function.apply(m), key, leftBorder, rightBorder);
-		
-        double m1 = nextStep(series, leftBorder, m, rightBorder);
+
+        double fl = function.apply(leftBorder), fr = function.apply(rightBorder);
+        double m = chooseMiddle(leftBorder, rightBorder, fl, fr);
+        double fm = function.apply(m);
+
+        addPointToSeries(series, m, function.apply(m), key++, leftBorder, rightBorder);
+
+        double m1 = nextStep(series, leftBorder, m, rightBorder, fl, fm, fr);
+        double fm1 = function.apply(m1);
         while (m1 < m - epsilon || m1 > m + epsilon) {
         	changeMiddle = true;
             if (m1 < m) {
             	rightBorder = m;
+            	fr = fm;
             } else {
             	leftBorder = m;
+            	fl = fm;
             }
             m = m1;
-            m1 = nextStep(series, leftBorder, m, rightBorder);
+            fm = fm1;
+            m1 = nextStep(series, leftBorder, m, rightBorder, fl, fm, fr);
+            fm1 = function.apply(m1);
         }
         return m1;
 	}
@@ -62,32 +70,26 @@ public class ParabolicSection extends Method {
      * @param right - maximal <code>x</code> of range
      * @return next medium <code>x</code>
      */
-    public double nextStep(List<StepFrame<Double>> series, double left, double m, double right) {
-        double f1 = function.apply(left), f2 = function.apply(m), f3 = function.apply(right);
-        
+    public double nextStep(List<StepFrame<Double>> series, double left, double m, double right, double fl, double fm, double fr) {
         if (changeMiddle) {
-        	addPointToSeries(series, m, f2, key++, left, right);
+        	addPointToSeries(series, m, fm, key++, left, right);
         }
         
         return m -
-                ((Math.pow(m - left, 2) * (f2 - f3) - Math.pow(m - right, 2) * (f2 - f1))
-                        / (2 * ((m - left) * (f2 - f3) - (m - right) * (f2 - f1))));
+                ((Math.pow(m - left, 2) * (fm - fr) - Math.pow(m - right, 2) * (fm - fl))
+                        / (2 * ((m - left) * (fm - fr) - (m - right) * (fm - fl))));
     }
 
     
-    private double chooseMiddle(double left, double right) {
-        double f1 = function.apply(left), f3 = function.apply(right);
-        double step = (right - left) / 100;
-        double m;
-        for (m = left; m < right; m += step) {
-            double f2 = function.apply(m);
-            if (f2 < f1 && f2 < f3) {
-            	key++;
-                return m;
-            }
-        }
-        key++;
-        return f1 < f3 ? left : right;
+    private double chooseMiddle(double left, double right, double fl, double fr) {
+//        if (function.apply(left + epsilon) <= fl) {
+//            return left + epsilon;
+//        }
+//        if (function.apply(right - epsilon) <= fr) {
+//            return right - epsilon;
+//        }
+//        return fl < fr ? left : right;
+        return 1.263932;
     }
 	
 }

@@ -12,11 +12,11 @@ public class CombineBrentMethod extends Method {
 	
 	private double epsilon = 0.0001;
 	private final double K = (3 - Math.sqrt(5)) / 2;
-	private ParabolicSection parabolic;
+	private ParabolicMethod parabolic;
 
 	CombineBrentMethod(Function<Double, Double> function) {
 		super(function);
-        parabolic = new ParabolicSection(function);
+        parabolic = new ParabolicMethod(function);
 	}
 
 	@Override
@@ -60,6 +60,7 @@ public class CombineBrentMethod extends Method {
 
 		double u = 0;
 
+		addPointToSeries(series, x, fx, key++, a, c);
 
 		while (true) {
 
@@ -79,14 +80,13 @@ public class CombineBrentMethod extends Method {
 			if (x != w && x != v && w != v && fx != fv && fx != fw && fv != fw) {
 				//find u (min of par on v,x,w)
 
-				u = parabolic.nextStep(series, v, x ,w);
+				u = parabolic.nextStep(series, v, x, w, fv, fx, fw);
 
 				//проверяем, что u попадает в диапазон и достаточно хорошо сокращает отрезок
 				if (a <= u && u <= c && Math.abs(u - x) < g / 2) {
 
 					//говорим что u нам подходит
 					uIsGood = true;
-
 					//если u оказался слишком близко к границе, то мы двигаем его в x
 					if (u - a < 2 * tol || c - u < 2 * tol) {
 						u = x - Math.signum(x - (a + c) / 2) * tol;
@@ -112,7 +112,6 @@ public class CombineBrentMethod extends Method {
 			d = Math.abs(u - x);
 
 			double fu = function.apply(u);
-
 
 			//переставляем границы
 			if (fu <= fx) {
@@ -142,10 +141,9 @@ public class CombineBrentMethod extends Method {
 					v = u;
 					fv = fu;
 				}
-
 			}
+			addPointToSeries(series, x, fx, key++, a, c);
 		}
-
 		return x;
 	}
 

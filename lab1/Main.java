@@ -54,11 +54,11 @@ public class Main {
 	};
 	
 	private static Method[] methods = {new DichotomyMethod(function), new GoldenCrossSection(function), 
-			new FibonacciMethod(function), new ParabolicSection(function), new CombineBrentMethod(function)};
+			new FibonacciMethod(function), new ParabolicMethod(function), new CombineBrentMethod(function)};
 	
 	private static JPanel graphPanel;
 	
-	private static double leftBorder = -1, rightBorder = 2;
+	private static double leftBorder = 0.5, rightBorder = 2.5;
 	
 	public static void main(String[] args) {
 		
