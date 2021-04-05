@@ -11,7 +11,7 @@ import java.util.function.Function;
 public class GoldenCrossSection extends Method {
 
 	private double epsilon = 0.0001;
-	private final double goldenCrossSectionConstant  = 1.61803;
+	private final double goldenCrossSectionConstant  = 2.61803;
 	
 	
 	GoldenCrossSection(Function<Double, Double> function) {
@@ -50,23 +50,48 @@ public class GoldenCrossSection extends Method {
 	 * @return <code>x</code>, where function has minimal value
 	 */
 	private double solve(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {
-		if (Math.abs(rightBorder - leftBorder) < epsilon) {
-            return (leftBorder + rightBorder) / 2;
-        } else {
-            double x1 = rightBorder - (rightBorder - leftBorder) / goldenCrossSectionConstant; 
-            double x2 = leftBorder + (rightBorder - leftBorder) / goldenCrossSectionConstant;
-            double y1 = function.apply(x1);
-            double y2 = function.apply(x2);
+		
+		double y1 = function.apply(x1);
+		double y2 = function.apply(x2);
+
+		while(Math.abs(rightBorder - leftBorder) >= epsilon) {
+			
+			double x1 = rightBorder - (rightBorder - leftBorder) / goldenCrossSectionConstant;
+			double x2 = leftBorder + (rightBorder - leftBorder) / goldenCrossSectionConstant;
+			
+			addPointToSeries(series, x1, y1, key++, leftBorder, rightBorder);
+			addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
+
+			if (y1 >= y2) {
+				leftBorder = x1;
+				y1 = y2;
+				y2 = function.apply(x2);
+			} else {
+				rightBorder = x2;
+				y2 = y1;
+				y1 = function.apply(x1);
+			}
+
+		}
+		return (leftBorder + rightBorder) / 2;
+		
+		// if (Math.abs(rightBorder - leftBorder) < epsilon) {
+		// 	return (leftBorder + rightBorder) / 2;
+        // } else {
+		// 	double x1 = rightBorder - (rightBorder - leftBorder) / goldenCrossSectionConstant; 
+        //     double x2 = leftBorder + (rightBorder - leftBorder) / goldenCrossSectionConstant;
+        //     double y1 = function.apply(x1);
+        //     double y2 = function.apply(x2);
             
-            addPointToSeries(series, x1, y1, key++, leftBorder, rightBorder);
-            addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
+		// 	addPointToSeries(series, x1, y1, key++, leftBorder, rightBorder);
+		// 	addPointToSeries(series, x2, y2, key++, leftBorder, rightBorder);
             
-            if (y1 >= y2) {
-                return solve(series, x1, rightBorder);
-            } else {
-                return solve(series, leftBorder, x2);
-            }
-        }
+        //     if (y1 >= y2) {
+        //         return solve(series, x1, rightBorder);
+        //     } else {
+        //         return solve(series, leftBorder, x2);
+        //     }
+        // }
 	}
 
 }
