@@ -20,7 +20,7 @@ public abstract class AbstractGradientMethod {
     /**
      * Writer for the log
      */
-    protected final BufferedWriter out;
+    protected final FileWriter out;
 
     /**
      * Full constructor
@@ -29,10 +29,10 @@ public abstract class AbstractGradientMethod {
      * @param fileName output file for {@link #out}
      * @throws FileNotFoundException
      */
-    public AbstractGradientMethod(double epsilon, boolean log, String fileName) throws FileNotFoundException {
+    public AbstractGradientMethod(double epsilon, boolean log, String fileName) throws IOException {
         this.epsilon = epsilon;
         this.log = log;
-        this.out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName)));
+        this.out = new FileWriter(fileName);
     }
 
     /**

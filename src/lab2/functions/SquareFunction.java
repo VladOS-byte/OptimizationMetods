@@ -28,12 +28,22 @@ public class SquareFunction {
         C = c;
     }
 
+    /**
+     * Evaluates function in x
+     * @param x point to evaluate in
+     * @return function value in point x
+     */
     public double run(double[] x) {
-        return scalarMultiply(multiply(A, x), x) - scalarMultiply(B, x) + C;
+        return scalarMultiply(multiply(A, x), x) / 2 - scalarMultiply(B, x) + C;
     }
 
+    /**
+     * Evaluates function's gradient in x
+     * @param x point to evaluate in
+     * @return function's gradient in point x
+     */
     public double[] runGradient(double[] x) {
-        return add(multiply(A, x), B);
+        return subtract(multiply(A, x), B);
     }
 
     public double[][] getA() {

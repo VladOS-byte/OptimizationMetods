@@ -4,7 +4,6 @@ import lab1.*;
 import lab2.functions.SquareFunction;
 import lab2.utils.Mode;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.function.Function;
 
@@ -18,6 +17,7 @@ public class FastGradientDescentMethod extends AbstractGradientMethod {
 
     /**
      * Standard constructor
+     *
      * @param epsilon {@link AbstractGradientMethod#epsilon}
      * @see AbstractGradientMethod#AbstractGradientMethod(double)
      */
@@ -25,24 +25,42 @@ public class FastGradientDescentMethod extends AbstractGradientMethod {
         super(epsilon);
     }
 
+    /**
+     * Standard constructor with mode
+     *
+     * @param epsilon {@link AbstractGradientMethod#epsilon}
+     * @param mode    OneDimensional optimization mode
+     * @see AbstractGradientMethod#AbstractGradientMethod(double)
+     */
     public FastGradientDescentMethod(final double epsilon, Mode mode) {
         super(epsilon);
         this.mode = mode;
     }
 
     /**
-     * Full constructor
-     * @param epsilon {@link #epsilon}
-     * @param log {@link AbstractGradientMethod#log}
+     * Full constructor with default mode
+     *
+     * @param epsilon  {@link #epsilon}
+     * @param log      {@link AbstractGradientMethod#log}
      * @param fileName output file for {@link AbstractGradientMethod#out}
-     * @throws FileNotFoundException if specified output file was not found
+     * @throws IOException if specified output file was not found
      * @see AbstractGradientMethod#AbstractGradientMethod(double, boolean, String)
      */
-    public FastGradientDescentMethod(final double epsilon, boolean log, String fileName) throws FileNotFoundException {
+    public FastGradientDescentMethod(final double epsilon, boolean log, String fileName) throws IOException {
         super(epsilon, log, fileName);
     }
 
-    public FastGradientDescentMethod(final double epsilon, boolean log, String fileName, Mode mode) throws FileNotFoundException {
+    /**
+     * Full constructor
+     *
+     * @param epsilon  {@link #epsilon}
+     * @param log      {@link AbstractGradientMethod#log}
+     * @param fileName output file for {@link AbstractGradientMethod#out}
+     * @param mode     OneDimensional optimization mode
+     * @throws IOException if specified output file was not found
+     * @see AbstractGradientMethod#AbstractGradientMethod(double, boolean, String)
+     */
+    public FastGradientDescentMethod(final double epsilon, boolean log, String fileName, Mode mode) throws IOException {
         super(epsilon, log, fileName);
         this.mode = mode;
     }
@@ -55,13 +73,15 @@ public class FastGradientDescentMethod extends AbstractGradientMethod {
         while (norm(gradient) > epsilon) {
             log(x, gradient);
             x = subtract(x, multiply(gradient, calculateStep(x, gradient, function)));
+            gradient = function.runGradient(x);
         }
         return x;
     }
 
     /**
-     * function for computing of the step.
-     * @param x start point
+     * Function for computing of the step.
+     *
+     * @param x        start point
      * @param gradient gradient of the fucntion
      * @param function explored function
      * @return step for {@link #findMinimum(SquareFunction, double[])}
@@ -75,6 +95,12 @@ public class FastGradientDescentMethod extends AbstractGradientMethod {
         return newOneDimensionMethod(f).minimize(null, 0, 10, new Settings(epsilon));
     }
 
+    /**
+     * Function to return instance of one dimension optimization class
+     *
+     * @param f function to optimize
+     * @return instance of one dimension optimization class optimizing  {@code f}
+     */
     private OneDimensionMethod newOneDimensionMethod(Function<Double, Double> f) {
         switch (mode) {
             case DICHOTOMY:
