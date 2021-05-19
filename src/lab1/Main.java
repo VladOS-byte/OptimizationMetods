@@ -25,6 +25,8 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleAnchor;
@@ -53,12 +55,17 @@ public class Main {
 		
 	};
 	
-	private static OneDimensionMethod[] methods = {new DichotomyMethod(function), new GoldenCrossSection(function),
+	private static XYPlot plot;
+	private final static double eps = 0.00004;
+	
+	private static OneDimensionMethod[] methods = {new DichotomyMethod(function), new GoldenCrossSection(function), 
 			new FibonacciMethod(function), new ParabolicMethod(function), new CombineBrentMethod(function)};
 	
 	private static JPanel graphPanel;
 	
 	private static double leftBorder = 0.5, rightBorder = 2.5;
+
+	private static XYSeries mainSeries;
 	
 	public static void main(String[] args) {
 		
@@ -82,14 +89,14 @@ public class Main {
 		
 		JPanel panel = new JPanel();
 		
-		JPanel epsPanel = new JPanel(new GridLayout(3, 2));
+		JPanel epsPanel = new JPanel(new GridLayout(4, 2));
 		epsPanel.setMaximumSize(new Dimension(100, 60));
 		
 		JLabel epsilonLabel = new JLabel("ε (0, 1], ε >= 4δ");
 		epsilonLabel.setMaximumSize(new Dimension(100, 20));
 		epsPanel.add(epsilonLabel);
 		
-		JTextField epsilon = new JTextField("0.00004"); 
+		JTextField epsilon = new JTextField(Double.toString(eps)); 
 		epsilon.setPreferredSize(new Dimension(120, 20));
 		epsPanel.add(epsilon);
 		
@@ -105,12 +112,43 @@ public class Main {
 		deltaLabel.setMaximumSize(new Dimension(100, 20));
 		epsPanel.add(deltaLabel);
 		
-		JTextField delta = new JTextField("0.00001"); 
+		JTextField delta = new JTextField(Double.toString(eps / 4)); 
 		delta.setPreferredSize(new Dimension(120, 20));
 		epsPanel.add(delta);
 		
+		JLabel graphLabel = new JLabel("График");
+		graphLabel.setMaximumSize(new Dimension(100, 20));
+		epsPanel.add(graphLabel);
+		
+		JButton graphButton = new JButton("выкл");
+		graphButton.setMaximumSize(new Dimension(120, 20));
+		graphButton.setBackground(Color.GRAY);
+		graphButton.addActionListener((event) -> {
+			graphButton.setBackground(Color.DARK_GRAY);
+			if (graphButton.getText() == "вкл") {
+				graphButton.setText("выкл");
+				plot.setDataset(0, new XYSeriesCollection(mainSeries));
+			} else {
+				graphButton.setText("вкл");
+				plot.setDataset(0, new XYSeriesCollection());
+			}
+			graphButton.setBackground(Color.GRAY);
+		});
+		epsPanel.add(graphButton);
+		
 		JPanel buttonPanel = new JPanel(new GridLayout(methods.length, 1));
 		buttonPanel.setMaximumSize(new Dimension(500, methods.length * 20));
+		
+
+		
+		mainSeries = new XYSeries(function.toString());
+		createGraph(mainSeries, function, eps);
+
+		graphPanel = new JPanel();
+		graphPanel.setMaximumSize(new Dimension(500, 600));
+		
+		JFreeChart chart = ChartFactory.createXYLineChart("Выберите метод", "x", "f(x)", 
+				new XYSeriesCollection(), PlotOrientation.VERTICAL, true, true, false);
 		
 		JButton[] buttons = new JButton[methods.length];
 		
@@ -122,6 +160,7 @@ public class Main {
 			buttons[buttonIndex].addActionListener((event) -> {
 				buttons[buttonIndex].setBackground(Color.DARK_GRAY);
 				if (isValidArgs(epsilon, sigma, delta)) {
+					chart.setTitle(methods[buttonIndex].getName());
 					Settings sets = new Settings(Double.parseDouble(epsilon.getText()),
 							Double.parseDouble(sigma.getText()), 
 							Double.parseDouble(delta.getText()));
@@ -132,14 +171,11 @@ public class Main {
 			
 			buttonPanel.add(buttons[buttonIndex]);
 		}
-
-		graphPanel = new JPanel();
-		graphPanel.setMaximumSize(new Dimension(500, 600));
 		
-		ChartPanel p = new ChartPanel(
-				ChartFactory.createXYLineChart("Выберите метод", "x", "f(x)", 
-						new XYSeriesCollection(),  PlotOrientation.VERTICAL, true, true, false));
-		graphPanel.add(p);
+		plot = chart.getXYPlot();
+		plot.setDataset(new XYSeriesCollection(mainSeries));
+		
+		graphPanel.add(new ChartPanel(chart));
 
 		panel.add(epsPanel);
 		panel.add(buttonPanel);
@@ -152,6 +188,12 @@ public class Main {
 	}
 	
 	
+	private static void createGraph(XYSeries series, Function<Double, Double> func, double step) {
+		for (double i = leftBorder; i <= rightBorder; i += step) {
+			series.add(i, func.apply(i));
+		}
+	}
+
 	/**
 	 * Check {@link #isValidDouble(double)} for <code>Parameters</code>
 	 * @param epsilon
@@ -203,10 +245,10 @@ public class Main {
 	/**
 	 * Minimize <code>function</code> by <code>i</code> method
 	 * @param i - <code>index</code> of method (and method's button)
-	 * @param sets - <code>Settings</code> of epsilon, sigma and delta
+	 * @param settings - <code>Settings</code> of epsilon, sigma and delta
 	 */
 	private static void onClick(int i, Settings sets) {
-		XYSeries series = new XYSeries(function.toString());
+		XYSeries series = new XYSeries("Opt." + function.toString());
 		
 		List<StepFrame<Double>> frameList = new ArrayList<>();
 		List<Point<Double>> list = new ArrayList<>();
@@ -246,13 +288,27 @@ public class Main {
 		
 		series.add(minX, minF);
 		
-		graphPanel.removeAll();
-		JFreeChart chart = ChartFactory.createXYLineChart(methods[i].getName(), "x", "f(x)", 
-				new XYSeriesCollection(series),  PlotOrientation.VERTICAL, true, true, false);
-		chart.getXYPlot().addDomainMarker(marker);
+//		graphPanel.removeAll();
+		
+//		JFreeChart chart = ChartFactory.createXYLineChart(methods[i].getName(), "x", "f(x)", 
+//				new XYSeriesCollection(), PlotOrientation.VERTICAL, true, true, false);
+//		plot = chart.getXYPlot();
+		plot.clearDomainMarkers();
+		
+		plot.addDomainMarker(marker);
+		
+		for (int k = 1; plot.getDataset(k) != null; ++k) {
+			plot.setDataset(k, new XYSeriesCollection());
+		}
+		
+//		plot.setDataset(0, new XYSeriesCollection(mainSeries));
+//		plot.setRenderer(0, new StandardXYItemRenderer());
+		plot.setDataset(1, new XYSeriesCollection(series));
+		plot.setRenderer(1, new StandardXYItemRenderer());
 		
 		int maxKey = 0;
 		
+		int parabol = 2;
 		for (int j = 0; j < list.size(); j++) {
 			marker = new ValueMarker(list.get(j).x);
 			int c = (256 / (list.get(list.size() - 1).key + 1) * list.get(j).key) % 256;
@@ -263,12 +319,29 @@ public class Main {
 			marker.setLabelPaint(color);
 			marker.setLabelFont(new Font("Dialog", Font.PLAIN, 12));
 			marker.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
-			chart.getXYPlot().addDomainMarker(marker);
+			plot.addDomainMarker(marker);
+			List<Double> abc;
+			if (methods[i] instanceof ParabolicMethod && 
+					(abc = ((ParabolicMethod) methods[i]).parabols.get(list.get(j).key)) != null) {
+				System.out.println(abc);
+				XYSeries parabolicSeries = new XYSeries("");
+				createGraph(parabolicSeries, new Function<>() {
+
+					@Override
+					public Double apply(Double x) {
+						return abc.get(0) * x * x + abc.get(1) * x + abc.get(2);
+					}
+					
+				}, eps);
+				
+				plot.setDataset(parabol, new XYSeriesCollection(parabolicSeries));
+				plot.setRenderer(parabol++, new StandardXYItemRenderer());
+			}
 		}
 		
 		System.out.print("(" + Math.round(Math.abs(Math.log(sets.epsilon))) + ";" + (maxKey + 1) + ") ");
 		
-		graphPanel.add(new ChartPanel(chart));
+//		graphPanel.add(new ChartPanel(chart));
 		graphPanel.updateUI();
 	}
 }
