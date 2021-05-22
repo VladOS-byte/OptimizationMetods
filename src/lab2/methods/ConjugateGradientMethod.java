@@ -38,7 +38,7 @@ public class ConjugateGradientMethod extends AbstractGradientMethod {
      * Iterative method of ConjugateGradient.
      *
      * @param squareFunction explored fucntion
-     * @param x0             point of start for current iterative launch
+     * @param x0 point of start for current iterative launch
      * @return temporary result of minimum
      * @throws IOException exception from {@link #log(double[], double[])}
      */

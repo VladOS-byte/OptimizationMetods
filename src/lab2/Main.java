@@ -17,6 +17,7 @@ public class Main {
         functions.add(new SquareFunction(new double[][]{{40, 2}, {2, 20}}, new double[]{-1, -1}, 0.0));
         functions.add(new SquareFunction(new double[][]{{400, 2}, {2, 100}}, new double[]{-1, -1}, 0.0));
 
+
         test(functions);
     }
 

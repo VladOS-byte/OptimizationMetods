@@ -1,6 +1,5 @@
 package lab1;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class ParabolicMethod extends OneDimensionMethod {
 	protected boolean changeMiddle = false;
 	public Map<Integer, List<Double>> parabols = new HashMap<>();
 	
-	ParabolicMethod(Function<Double, Double> function) {
+	public ParabolicMethod(Function<Double, Double> function) {
 		super(function);
 	}
 
