@@ -2,7 +2,7 @@ package lab3.solvers;
 
 import lab3.matrix.ProfileMatrix;
 
-public class LuSolver {
+public class LUSolver {
     private static void gaussForward(final ProfileMatrix matrix, final double[] b) {
         for (int i = 0; i < matrix.size(); ++i) {
             for (int j = 0; j < i; ++j) {

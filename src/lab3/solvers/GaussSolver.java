@@ -2,7 +2,7 @@ package lab3.solvers;
 
 import java.util.stream.IntStream;
 
-public class CommonGaussMethod {
+public class GaussSolver {
     private final double[][] matrix;
     private final double[] b;
     private final int[] rowPermutation;
@@ -10,7 +10,7 @@ public class CommonGaussMethod {
     private final int n;
 
     // matrix * x = b
-    public CommonGaussMethod(final double[][] matrix, final double[] b) {
+    public GaussSolver(final double[][] matrix, final double[] b) {
         this.matrix = matrix;
         this.b = b;
         n = matrix.length;

@@ -1,7 +1,7 @@
 package lab3;
 
 import lab3.conjugate.ConjugateGradientMethod;
-import lab3.solvers.LuSolver;
+import lab3.solvers.LUSolver;
 import lab3.utils.MatrixUtil;
 import lab3.generator.MatrixGenerator;
 import lab3.matrix.LineColumnMatrix;
@@ -47,7 +47,7 @@ public class Main {
             b = readB(args[0]);
             final ProfileMatrix matrix = new ProfileMatrix(args[0]);
             matrix.showByGetters();
-            LuSolver.solve(matrix, b);
+            LUSolver.solve(matrix, b);
         }
         try (final BufferedWriter writer = Files.newBufferedWriter(Path.of(args[0], "ans.txt"))) {
             writer.write(Arrays.stream(b).mapToObj(Objects::toString).collect(Collectors.joining(" ")));
