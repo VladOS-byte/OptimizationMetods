@@ -3,7 +3,7 @@ package lab3;
 import lab3.conjugate.ConjugateGradientMethod;
 import lab3.solvers.LUSolver;
 import lab3.utils.MatrixUtil;
-import lab3.generator.MatrixGenerator;
+import lab3.generator.Generator;
 import lab3.matrix.LineColumnMatrix;
 import lab3.matrix.ProfileMatrix;
 
@@ -27,8 +27,8 @@ public class Main {
         if (args.length > 1) {
             try {
                 switch (args[1]) {
-                    case "hilbert" -> MatrixGenerator.parseAndWrite(MatrixGenerator.generateHilbertMatrix(Integer.parseInt(args[2])), args[0]);
-                    case "normal" -> MatrixGenerator.parseAndWrite(MatrixGenerator.generateOrdinaryMatrix(Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[0]);
+                    case "hilbert" -> Generator.parseAndWrite(Generator.generateHilbertMatrix(Integer.parseInt(args[2])), args[0]);
+                    case "normal" -> Generator.parseAndWrite(Generator.generateOrdinaryMatrix(Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[0]);
                     case "bonus" -> bonus = true;
                 }
             } catch (final IOException e) {
