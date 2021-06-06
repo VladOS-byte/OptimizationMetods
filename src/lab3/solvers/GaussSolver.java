@@ -9,7 +9,6 @@ public class GaussSolver {
     private final int[] columnPermutation;
     private final int n;
 
-    // matrix * x = b
     public GaussSolver(final double[][] matrix, final double[] b) {
         this.matrix = matrix;
         this.b = b;

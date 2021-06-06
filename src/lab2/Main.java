@@ -50,15 +50,15 @@ public class Main {
         double[] x;
 
         System.out.println("==Gradient Descent method for : " + Arrays.toString(x0) + " \n");
-        x = m1.findMinimum(function, x0);
+        x = m1.minimize(function, x0);
         System.out.println("min: " + Arrays.toString(x) + "\n" + "\n");
 
         System.out.println("==Fast Gradient Descent method for : " + Arrays.toString(x0) + " \n");
-        x = m2.findMinimum(function, x0);
+        x = m2.minimize(function, x0);
         System.out.println("min: " + Arrays.toString(x) + "\n" + "\n");
 
         System.out.println("==Conjugate Gradient method for : " + Arrays.toString(x0) + " \n");
-        x = m3.findMinimum(function, x0);
+        x = m3.minimize(function, x0);
         System.out.println("min: " + Arrays.toString(x) + "\n" + "\n");
     }
 }

@@ -21,7 +21,6 @@ import java.util.stream.DoubleStream;
 public class Main {
 
     private static void solve(final String[] args) {
-        //args: path [hilbert $dimension | normal $dimension $normal | bonus]
         checkArgs(args);
         boolean bonus = false;
         if (args.length > 1) {
