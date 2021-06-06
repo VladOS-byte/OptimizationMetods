@@ -21,14 +21,14 @@ import java.util.stream.DoubleStream;
 public class Main {
 
     private static void solve(final String[] args) {
-        //args: path [hilbert $dimension | ordinary $dimension $ordinary | bonus]
+        //args: path [hilbert $dimension | normal $dimension $normal | bonus]
         checkArgs(args);
         boolean bonus = false;
         if (args.length > 1) {
             try {
                 switch (args[1]) {
                     case "hilbert" -> MatrixGenerator.parseAndWrite(MatrixGenerator.generateHilbertMatrix(Integer.parseInt(args[2])), args[0]);
-                    case "ordinary" -> MatrixGenerator.parseAndWrite(MatrixGenerator.generateOrdinaryMatrix(Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[0]);
+                    case "normal" -> MatrixGenerator.parseAndWrite(MatrixGenerator.generateOrdinaryMatrix(Integer.parseInt(args[2]), Integer.parseInt(args[3])), args[0]);
                     case "bonus" -> bonus = true;
                 }
             } catch (final IOException e) {
@@ -89,7 +89,7 @@ public class Main {
                 } catch (final NumberFormatException ignored) {
                     throw new IllegalArgumentException(message);
                 }
-            } else if (args[1].equals("ordinary") && args.length == 4) {
+            } else if (args[1].equals("normal") && args.length == 4) {
                 try {
                     Integer.parseInt(args[2]);
                     Integer.parseInt(args[3]);
