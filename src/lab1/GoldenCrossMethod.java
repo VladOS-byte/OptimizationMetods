@@ -8,13 +8,13 @@ import java.util.function.Function;
  * <a href="https://en.wikipedia.org/wiki/Golden-section_search">Golden-section search</a>
  * @author Vladislav Pavlov, Danila Kuriabov
  */
-public class GoldenCrossSection extends OneDimensionMethod {
+public class GoldenCrossMethod extends OneDimensionMethod {
 
 	private double epsilon = 0.0001;
 	private final double goldenCrossSectionConstant  = (1 + Math.sqrt(5)) / 2;
 	
 	
-	public GoldenCrossSection(Function<Double, Double> function) {
+	public GoldenCrossMethod(Function<Double, Double> function) {
 		super(function);
 	}
 

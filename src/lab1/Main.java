@@ -58,7 +58,7 @@ public class Main {
 	private static XYPlot plot;
 	private final static double eps = 0.00004;
 	
-	private static OneDimensionMethod[] methods = {new DichotomyMethod(function), new GoldenCrossSection(function), 
+	private static OneDimensionMethod[] methods = {new DichotomyMethod(function), new GoldenCrossMethod(function),
 			new FibonacciMethod(function), new ParabolicMethod(function), new CombineBrentMethod(function)};
 	
 	private static JPanel graphPanel;

@@ -1,4 +1,4 @@
-package lab3.conjugate;
+package lab4.methods.gradient;
 
 import lab3.matrix.LineColumnMatrix;
 

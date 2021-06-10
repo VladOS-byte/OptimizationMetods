@@ -1,5 +1,6 @@
 package lab1;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,7 +36,12 @@ public class CombineBrentMethod extends OneDimensionMethod {
 		epsilon = sets.epsilon;
 		return minimize(series, leftBorder, rightBorder);
 	}
-	
+
+
+	public double minimize(double leftBorder, double rightBorder, double eps) {
+		epsilon = eps;
+		return minimize(new ArrayList<>(), leftBorder, rightBorder);
+	}
 
 	@Override
 	public double minimize(List<StepFrame<Double>> series, double leftBorder, double rightBorder) {

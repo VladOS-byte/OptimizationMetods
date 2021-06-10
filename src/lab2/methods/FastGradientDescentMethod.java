@@ -56,7 +56,7 @@ public class FastGradientDescentMethod extends AbstractGradientMethod {
             case DICHOTOMY:
                 return new DichotomyMethod(f);
             case GOLDEN_CROSS:
-                return new GoldenCrossSection(f);
+                return new GoldenCrossMethod(f);
             case PARABOLIC:
                 return new ParabolicMethod(f);
             case FIBONACCI:
