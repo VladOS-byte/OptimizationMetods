@@ -18,26 +18,24 @@ public class Main {
 
     public static void main(String[] args) {
         Method classicNewtonMethod = new ClassicNewtonMethod();
+        Method optimizedNewtonMethod = new StepOptimizedNewtonMethod();
+        Method directionNewtonMethod = new DescentDirectionNewtonMethod();
+
         test("Classic Newton", classicNewtonMethod, new Function1(), new double[]{4, 1});
         test("Classic Newton", classicNewtonMethod, new Function5(), new double[]{-1.2, 1});
         test("Classic Newton", classicNewtonMethod, new Function2(), new double[]{-10, -10});
         test("Classic Newton", classicNewtonMethod, new Function3(), new double[]{-10, -10});
         test("Classic Newton", classicNewtonMethod, new Function4(), new double[]{-10, -10});
-
-        Method optimizedNewtonMethod = new StepOptimizedNewtonMethod();
         test("Step Optimixed Newton", optimizedNewtonMethod, new Function1(), new double[]{4, 1});
         test("Step Optimixed Newton", optimizedNewtonMethod, new Function5(), new double[]{-1.2, 1});
         test("Step Optimixed Newton", optimizedNewtonMethod, new Function2(), new double[]{-10, -10});
         test("Step Optimixed Newton", optimizedNewtonMethod, new Function3(), new double[]{-10, -10});
         test("Step Optimixed Newton", optimizedNewtonMethod, new Function4(), new double[]{-10, -10});
-
-        Method directionNewtonMethod = new DescentDirectionNewtonMethod();
         test("Descent Direction Newton", directionNewtonMethod, new Function1(), new double[]{4, 1});
         test("Descent Direction Newton", directionNewtonMethod, new Function5(), new double[]{-1.2, 1});
         test("Descent Direction Newton", directionNewtonMethod, new Function2(), new double[]{-10, -10});
         test("Descent Direction Newton", directionNewtonMethod, new Function3(), new double[]{-10, -10});
         test("Descent Direction Newton", directionNewtonMethod, new Function4(), new double[]{-10, -10});
-
 
         double[] bonusStartPoint = new double[100];
         Arrays.fill(bonusStartPoint, 5);
@@ -49,9 +47,8 @@ public class Main {
 
         Method dfp = new DavidFletcherPowellMethod(EPS);
         Method powell = new PowellMethod(EPS);
-        test("David Fletcher Powell", dfp, new BonusFunction(), bonusStartPoint);
+//        test("David Fletcher Powell", dfp, new BonusFunction(), bonusStartPoint);
         test("Powell", powell, new BonusFunction(), bonusStartPoint);
-
     }
 
     private static void test(String methodName, Method method, Function function, double[] start) {
